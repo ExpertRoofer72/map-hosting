@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Google Map</title>
+  <style>
+    /* Set up the map container dimensions */
+    #map {
+      height: 500px; /* Height of the map */
+      width: 100%; /* Full width */
+    }
+    /* Input box and button styling */
+    #addressInput {
+      margin: 10px;
+      width: 300px;
+      padding: 5px;
+    }
+    #searchButton {
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Address Input Section -->
+  <input id="addressInput" type="text" placeholder="Enter address">
+  <button id="searchButton">Search</button>
+
+  <!-- Map Container -->
+  <div id="map"></div>
+
+  <!-- Load the Google Maps JavaScript API -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJ962xyunIMMf5ht3sm6v9OtAmSkURZQE&callback=initMap">
+  </script>
+
+  <!-- JavaScript to Initialize Map & Search Address -->
+  <script>
+    let map;
+    let geocoder;
+
+    function initMap() {
+      // Initialize the Google Map centered on a default location
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 40.730610, lng: -73.935242 }, // Default coordinates (New York City)
+        zoom: 18, // Default zoom level
+        mapTypeId: 'satellite', // Set the map type to satellite
+        tilt: 45 // Optional tilt for 3D effect
+      });
+
+      // Initialize the geocoder for address search
+      geocoder = new google.maps.Geocoder();
+    }
+
+    // Function to center the map based on the address input
+    function geocodeAddress() {
+      const address = document.getElementById('addressInput').value;
+      geocoder.geocode({ 'address': address }, function(results, status) {
+        if (status === 'OK') {
+          // Center the map to the geocoded location
+          map.setCenter(results[0].geometry.location);
+          // Optionally, add a marker to the location
+          new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+          });
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
+    }
+
+    // Add event listener to the search button
+    document.getElementById('searchButton').addEventListener('click', geocodeAddress);
+  </script>
+</body>
+</html>
+
